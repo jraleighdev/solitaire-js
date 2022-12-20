@@ -101,7 +101,7 @@ export class CardGroup extends GameObject implements CardParentBase {
     }
 
     private drawSingleCard(): void {
-        this.cards[0].draw();
+        this.cards[this.cards.length - 1].draw();
     }
 
     private drawStackedCard(): void {

@@ -4,10 +4,10 @@ body {
 }
 
 canvas {
-    border-color: black;
+    border-color: rgb(29, 28, 28);
     border-style: double;
 }
 
 div {
-    background-color: #194383;
+    background-color: #312f2f;
 }

@@ -89,7 +89,9 @@ export class Card extends GameObject {
         const offsetRight = 30;
         this.ctx.save();
         this.ctx.fillStyle = 'white';
-        this.ctx.fillRect(this.x, this.y, this.width, this.height)
+        this.ctx.fillRect(this.x, this.y, this.width, this.height);
+        this.ctx.strokeStyle = '#312f2f';
+        this.ctx.strokeRect(this.x, this.y, this.width, this.height)
         this.ctx.drawImage(
             this.faceImage,
             this.x + xOffset / 2,
@@ -106,7 +108,6 @@ export class Card extends GameObject {
 
     drawBack(): void {
         const backImageOffset = Card.Width / 3;
-
         this.ctx.save();
         this.ctx.fillStyle = '#194383';
         this.ctx.fillRect(this.x, this.y, this.width, this.height);
@@ -151,14 +152,6 @@ export class Card extends GameObject {
     move(x: number, y: number): void {
         this.x = x;
         this.y = y;
-    }
-
-    hover() {
-
-    }
-
-    hoverLeave() {
-
     }
 
     cardMap: Record<CardNumber, string> = {
