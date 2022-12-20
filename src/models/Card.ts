@@ -1,13 +1,22 @@
 
+import { CardParentBase } from "~/interfaces/CardParentBase";
+import { Point } from "~/interfaces/Point";
 import { CardColor } from "../enums/CardColor";
 import { CardNumber, Suites } from "../enums/CardTypes";
+import { CardGroup } from "./CardGroup";
 import { GameObject } from "./GameObject";
 
 export class Card extends GameObject {
 
     public static readonly Width = 100;
     public static readonly Height = 200;
+    public static readonly Offset = 30;
 
+    public get Id(): string {
+        return `${this.suite}-${this.cardNumber}`;
+    }
+
+    public parent: CardParentBase;
     public path: Path2D;
     public suite: Suites;
     public cardNumber: CardNumber;
@@ -18,19 +27,28 @@ export class Card extends GameObject {
     private faceImage: HTMLImageElement;
     private backImage: HTMLImageElement;
     private ctx: CanvasRenderingContext2D;
+    private mousePoint: Point = { x: 0, y: 0 }
+    private offset: Point = { x: 0, y: 0};
+    private previous: Point = { x: 0, y: 0};
+
+    get getOverlapPoint(): Point {
+        return { x: this.topLeftPoint.x, y: this.topLeftPoint.y + Card.Offset};
+    }
 
     constructor(
         suite: Suites,
         cardNumber: CardNumber,
         x: number,
         y: number,
-        ctx: CanvasRenderingContext2D) {
+        ctx: CanvasRenderingContext2D,
+        parent: CardParentBase) {
         super(x, y, Card.Height, Card.Width)
         this.path = new Path2D();
         this.path.rect(x, y, this.width, this.height);
         this.suite = suite;
         this.cardNumber = cardNumber;
         this.ctx = ctx;
+        this.parent = parent;
 
         switch (this.suite) {
             case (Suites.club):
@@ -54,9 +72,9 @@ export class Card extends GameObject {
         this.backImage = document.getElementById('cardBack') as HTMLImageElement;
     }
 
-    draw(): void {
+    draw(overLapped = false): void {
         this.path = new Path2D();
-        this.path.rect(this.x, this.y, this.width, this.height);
+        this.path.rect(this.x, this.y, this.width, overLapped ? Card.Offset : this.height);
         if (this.showFace) {
             this.drawFace();
         } else {
@@ -79,7 +97,7 @@ export class Card extends GameObject {
             this.width - xOffset,
             this.height - yOffset
         );
-        this.ctx.fillStyle = 'black';
+        this.ctx.fillStyle = this.cardColor == CardColor.red ? 'red' : 'black';
         this.ctx.font = '30px times new roman'
         this.ctx.fillText(this.cardMap[this.cardNumber], this.topLeftPoint.x + offsetLeft, this.topLeftPoint.y + offsetRight)
         this.ctx.fillText(this.cardMap[this.cardNumber], this.bottomRightPoint.x - offsetRight, this.bottomRightPoint.y - offsetLeft)
@@ -104,8 +122,35 @@ export class Card extends GameObject {
         this.ctx.restore();
     }
 
-    click() {
+    public getMouseOffset(): Point {
+        return this.offset;
+    }
 
+    mouseDown(point: Point): void {
+        this.mousePoint = point;
+        this.offset = {x: Math.abs(this.mousePoint.x - this.x), y: Math.abs(this.mousePoint.y - this.y)};
+    }
+
+    mouseUp(): void {
+        this.mousePoint = { x: 0, y: 0 };
+    }
+
+    getPrevious(): Point {
+        return this.previous;
+    }
+
+    setPrevious(): void {
+        this.previous = { x: this.x, y: this.y }
+    }
+
+    restorePrevious(): void {
+        this.x = this.previous.x;
+        this.y = this.previous.y;
+    }
+
+    move(x: number, y: number): void {
+        this.x = x;
+        this.y = y;
     }
 
     hover() {
