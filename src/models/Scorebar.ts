@@ -10,6 +10,8 @@ export class ScoreBar {
     public static readonly ButtonWidth = 40;
     public static readonly ButtonHeight = 40;
     public static readonly ButtonColor = '#254620';
+    public static readonly tableueScore = 5;
+    public static readonly foundationScore = 10;
 
     public restartImage: HTMLImageElement = document.getElementById('restart') as HTMLImageElement;
 
@@ -25,14 +27,14 @@ export class ScoreBar {
 
     private _score = 0;
 
-    constructor(private ctx: CanvasRenderingContext2D) {
+    constructor(private ctx: CanvasRenderingContext2D, restart: Function) {
         this.restartButton = new Button(
             ScoreBar.ButtonColor, 
             20, 
             (ScoreBar.Height / 2) - (ScoreBar.ButtonHeight / 2), 
             ScoreBar.ButtonWidth, ScoreBar.ButtonHeight,
             this.ctx,
-            this.restart,
+            restart,
             this.restartImage);
 
         this.addEventListener();
@@ -42,6 +44,14 @@ export class ScoreBar {
         this.drawBackGround();
         this.drawScore();
         this.restartButton.draw();
+    }
+
+    public add(points: number): void {
+        this._score += points;
+    }
+
+    public reset(): void {
+        this._score = 0;
     }
 
     private drawScore(): void {
@@ -57,10 +67,6 @@ export class ScoreBar {
         this.ctx.fillStyle = ScoreBar.Color;
         this.ctx.fillRect(0, 0, Game.Width, ScoreBar.Height);
         this.ctx.restore();
-    }
-
-    private restart(): void {
-        console.log('hello');
     }
 
     private addEventListener(): void {

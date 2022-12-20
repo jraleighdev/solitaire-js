@@ -24,6 +24,7 @@ export class CardDeck extends GameObject implements CardParentBase {
     }
 
     rebuildDeck(): void {
+        this.cards = [];
         const tempArray: Card[] = [];
         const numberOfCards = 52;
         const suiteCount = numberOfCards / 4;
