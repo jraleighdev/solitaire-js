@@ -3,7 +3,6 @@ import { CardParentBase } from "~/interfaces/CardParentBase";
 import { Point } from "~/interfaces/Point";
 import { CardColor } from "../enums/CardColor";
 import { CardNumber, Suites } from "../enums/CardTypes";
-import { CardGroup } from "./CardGroup";
 import { GameObject } from "./GameObject";
 
 export class Card extends GameObject {
@@ -101,8 +100,9 @@ export class Card extends GameObject {
         );
         this.ctx.fillStyle = this.cardColor == CardColor.red ? 'red' : 'black';
         this.ctx.font = '30px times new roman'
-        this.ctx.fillText(this.cardMap[this.cardNumber], this.topLeftPoint.x + offsetLeft, this.topLeftPoint.y + offsetRight)
-        this.ctx.fillText(this.cardMap[this.cardNumber], this.bottomRightPoint.x - offsetRight, this.bottomRightPoint.y - offsetLeft)
+        const additionalOffset = this.cardNumber == CardNumber.ten ? 10 : 0;
+        this.ctx.fillText(this.cardMap[this.cardNumber], this.topLeftPoint.x + (offsetLeft - additionalOffset / 2), this.topLeftPoint.y + offsetRight)
+        this.ctx.fillText(this.cardMap[this.cardNumber], this.bottomRightPoint.x - (offsetRight + additionalOffset), this.bottomRightPoint.y - offsetLeft)
         this.ctx.restore();
     }
 
